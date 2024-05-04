@@ -1,20 +1,39 @@
 import React from 'react'
 import { Button } from "@material-tailwind/react";
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { baseUrl } from '../../constants/apis';
-
+import { useAddOrdersMutation } from '../order/orderApi';
+import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router';
+import { clearCart } from '../cart/cartSlice';
 
 const PlaceOrder = () => {
-
-
-const {carts} = useSelector((state) => state.cartSlice);
-const {user} = useSelector((state) => state.cartSlice);
+const nav = useNavigate();
+const dispatch = useDispatch();
+const [addOrder, {isLoading}] = useAddOrdersMutation();
+const { carts } = useSelector((state) => state.cartSlice);
+const { user } = useSelector((state) => state.userSlice);
 
   const total = carts.reduce((prev, cart) => prev + cart.price * cart.qty, 0);
 
 
   const handleOrder = async () => {
-
+    try {
+      const response = await addOrder({
+        body: {
+          totalAmount: total,
+          orderItems: carts
+         },
+        token: user.token
+      }).unwrap();
+      dispatch(clearCart());
+      toast.dismiss();
+      toast.success(response.message);
+      nav('/', {replace: true});
+    } catch (err) {
+      toast.dismiss();
+      toast.error(err.data.message);
+    }
   }
 
   return (
@@ -50,7 +69,7 @@ const {user} = useSelector((state) => state.cartSlice);
             <h1>Rs.{total}</h1>
           </div>
         </div>
-        <Button onClick={handleOrder} className="mt-5" >Place An Order</Button>
+        <Button loading={isLoading} onClick={handleOrder} className="mt-5" >Place An Order</Button>
       </div> : <h1>order list is empty</h1>}
 
 

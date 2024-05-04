@@ -4,11 +4,12 @@ import React from 'react'
 import { toast } from 'react-toastify';
 import * as Yup from 'yup';
 import { useReviewAddMutation } from './productApi';
+import { useNavigate } from 'react-router';
 
 
 const ProductReview = ({ user, id, reviews }) => {
 
-
+const nav = useNavigate();
   const commentSchema = Yup.object({
     rating: Yup.number().required('required'),
     comment: Yup.string().min(5).required(),
@@ -20,6 +21,7 @@ const ProductReview = ({ user, id, reviews }) => {
       comment: ''
     },
     onSubmit: async (val) => {
+      if(!user) nav('/login');
 
 
     },
@@ -29,9 +31,10 @@ const ProductReview = ({ user, id, reviews }) => {
   return (
     <div className='space-y-2'>
 
-      <h1>Add Review here</h1>
 
-      {!user?.isAdmin && <form onSubmit={handleSubmit}>
+      {!user?.isAdmin && <div> 
+      <h1>Add Review here</h1>
+        <form onSubmit={handleSubmit}>
         <div className="w-96 space-y-2" >
           <Rating onChange={(e) => setFieldValue('rating', e)} name="rating" />
           <Textarea label="Message" name='comment' onChange={handleChange} />
@@ -40,6 +43,7 @@ const ProductReview = ({ user, id, reviews }) => {
           Submit
         </Button>
       </form>
+      </div> 
       }
 
       <div className='mt-5'>

@@ -57,9 +57,21 @@ export const productApi = createApi({
     }),
 
 
+    addReview: builder.mutation({
+      query: (query) => ({
+        url: `/review/${query.id}`,
+        body: query.body,
+        method: 'POST',
+        headers: {
+          Authorization: query.token
+        }
+      }),
+      invalidatesTags: ['Product']
+    }),
+
 
   })
 });
 
 
-export const { useGetAllProductsQuery, useGetTopProductsQuery, useGetProductByIdQuery, useAddProductMutation, useUpdateProductMutation } = productApi;
+export const { useGetAllProductsQuery, useGetTopProductsQuery, useGetProductByIdQuery, useAddProductMutation, useUpdateProductMutation,useAddReviewMutation } = productApi;
