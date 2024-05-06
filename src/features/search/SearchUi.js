@@ -1,21 +1,14 @@
-import { baseUrl } from "../../constants/apis";
-
-import {
-  Card,
-  CardHeader,
-  CardBody,
-  CardFooter,
-  Typography,
-  Button,
-} from "@material-tailwind/react";
-import { useNavigate } from 'react-router';
-import { useGetAllProductsQuery } from "./productApi";
-import CardSkeleton from "../../ui/CardSkeleton";
-const ProductShow = () => {
-
-  const { isLoading, isError, error, data } = useGetAllProductsQuery();
+import React from 'react'
+import { useNavigate, useParams } from 'react-router'
+import { useGetAllProductsQuery } from '../products/productApi';
+import { baseUrl } from '../../constants/apis';
+import { Button, Card, CardBody, CardFooter, CardHeader, Typography } from '@material-tailwind/react';
+import CardSkeleton from '../../ui/CardSkeleton';
+const SearchUi = () => {
+  const {search} = useParams();
   const nav = useNavigate();
-
+  const { isLoading, isError, error, data } = useGetAllProductsQuery(search);
+  
   if (isLoading) {
     return <CardSkeleton />
   }
@@ -65,4 +58,5 @@ const ProductShow = () => {
     </div>
   )
 }
-export default ProductShow
+
+export default SearchUi

@@ -19,6 +19,9 @@ export const productApi = createApi({
     getAllProducts: builder.query({
       query: (query) => ({
         url: '/',
+        params: {
+          search: query
+          },
         method: 'GET'
       }),
       providesTags: ['Product']
@@ -61,7 +64,7 @@ export const productApi = createApi({
       query: (query) => ({
         url: `/review/${query.id}`,
         body: query.body,
-        method: 'POST',
+        method: 'PATCH',
         headers: {
           Authorization: query.token
         }
